@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Тест 6: Общение — Подключение</title>
+    <style>
+        :root {
+            --bg: #020617;
+            --card: #0f172a;
+            --gold: #c5a059;
+            --green: #10b981;
+            --red: #f43f5e;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #app {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .hidden { display: none !important; }
+
+        .icon-box {
+            width: 60px; height: 60px; margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gold); border: 2px solid var(--gold); border-radius: 18px;
+            background: rgba(197, 160, 89, 0.1);
+        }
+
+        h1 { font-size: 24px; font-weight: 800; text-align: center; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        .subtitle { font-size: 14px; color: var(--text-dim); text-align: center; margin-bottom: 32px; line-height: 1.4; }
+
+        .progress-box { margin-bottom: 25px; }
+        .progress-label { font-size: 10px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 2px; }
+        .progress-bar { width: 100%; height: 4px; background: #1e293b; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.4s ease; }
+
+        .option {
+            width: 100%; padding: 16px; background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border); border-radius: 16px; margin-bottom: 12px;
+            color: #fff; text-align: left; font-size: 15px; cursor: pointer;
+            display: flex; align-items: center; transition: 0.2s;
+        }
+        .option-indicator {
+            width: 28px; height: 28px; border: 1px solid #334155; border-radius: 50%;
+            margin-right: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: bold; color: var(--gold);
+        }
+
+        .correct { border-color: var(--green) !important; background: rgba(16, 185, 129, 0.1) !important; }
+        .incorrect { border-color: var(--red) !important; background: rgba(244, 63, 94, 0.1) !important; }
+        .highlight { border-color: var(--green) !important; border-style: dashed !important; }
+
+        .feedback {
+            padding: 20px; border-radius: 20px; background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border); margin-top: 20px; animation: fadeInUp 0.4s ease-out;
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn {
+            width: 100%; padding: 18px; border-radius: 18px; border: none;
+            font-weight: 800; font-size: 15px; cursor: pointer; text-transform: uppercase;
+            font-family: inherit; margin-top: 10px;
+        }
+        .btn-gold { background: var(--gold); color: #000; }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: #fff; margin-top: 20px; }
+        .btn-white { background: #fff; color: #000; margin-top: 20px; }
+
+        .result-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid var(--gold); border-radius: 24px; padding: 30px; text-align: center;
+        }
+        .final-score { font-size: 52px; font-weight: 900; color: var(--gold); margin: 10px 0; }
+        .final-status { font-size: 18px; font-weight: 800; text-transform: uppercase; color: #fff; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- ЭКРАН 1: СТАРТ -->
+        <div id="scr-intro">
+            <div class="icon-box">
+                <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+            </div>
+            <h1>Урок 6: Общение</h1>
+            <p class="subtitle">Принципы взаимного назидания и подотчетности в Теле Церкви. Финальная аттестация по 2-му блоку.</p>
+            <button class="btn btn-gold" onclick="start()">Начать аттестацию</button>
+        </div>
+
+        <!-- ЭКРАН 2: ТЕСТ -->
+        <div id="scr-quiz" class="hidden">
+            <div class="progress-box">
+                <div class="progress-label" id="q-label">Вопрос 1 / 8</div>
+                <div class="progress-bar"><div class="progress-fill" id="q-fill"></div></div>
+            </div>
+            <h2 id="q-text" style="font-size: 19px; line-height: 1.4; margin-bottom: 25px;"></h2>
+            <div id="options-container"></div>
+            <div id="feedback-area" class="hidden">
+                <div class="feedback">
+                    <div id="fb-title" style="font-weight: 800; font-size: 17px; margin-bottom: 6px;"></div>
+                    <div id="fb-text" style="font-size: 14px; color: var(--text-dim); line-height: 1.5;"></div>
+                </div>
+                <button class="btn btn-white" onclick="next()">Продолжить</button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 3: ИТОГИ -->
+        <div id="scr-final" class="hidden">
+            <div class="result-card">
+                <div style="font-size: 10px; font-weight: 900; color: var(--gold); letter-spacing: 2px; margin-bottom: 10px;">ПОДТВЕРЖДЕНИЕ КУРСА</div>
+                <div id="final-status" class="final-status">ЧЕЛОВЕК НАЗИДАНИЯ</div>
+                <div id="final-score" class="final-score">0</div>
+                <div style="font-size: 12px; color: var(--text-dim); font-weight: bold; text-transform: uppercase;">баллов из 8</div>
+                <div style="margin-top: 20px; font-style: italic; font-size: 13px; color: var(--text-dim); border-top: 1px dashed var(--border); padding-top: 15px;">
+                    «...всё да будет к назиданию» (1 Кор. 14:26)
+                </div>
+            </div>
+            <p style="text-align: center; font-size: 13px; color: var(--text-dim); margin: 25px 0;">
+                📸 <b>ФИНАЛЬНЫЙ ШАГ:</b> Сделайте скриншот и отправьте в ветку 🏆 «Наши результаты».
+            </p>
+            <button class="btn btn-outline" onclick="location.reload()">Пройти заново</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                q: "В чем, согласно 1 Ин. 1:7, заключается секрет способности христиан понимать друг друга?",
+                a: [
+                    { t: "В общности национальных интересов", c: false },
+                    { t: "В хождении в одном и том же Божьем Свете", c: true, r: "Если мы ходим в том же свете, что и ближний, наш общий Источник дает нам общий язык." }
+                ]
+            },
+            {
+                q: "Что такое «взаимное назидание» при встрече всех членов церкви?",
+                a: [
+                    { t: "Когда каждый получает пользу посредством другого", c: true, r: "В собрании Господь развивает нас через псалом, учение или откровение ближнего (1 Кор. 14:26)." },
+                    { t: "Когда все слушают только одного лидера", c: false }
+                ]
+            },
+            {
+                q: "К чему сводится вопрос библейского общения согласно 2 Кор. 8:14?",
+                a: [
+                    { t: "К способности делиться избытком для восполнения недостатка", c: true, r: "Библейская равномерность: твоя нужда — это моя возможность собрать жатву." },
+                    { t: "К соревнованию духовных даров", c: false }
+                ]
+            },
+            {
+                q: "Почему Апостол Павел рекомендует в церкви говорить на понятном языке (1 Кор. 14:19)?",
+                a: [
+                    { t: "Чтобы церковь получила назидание", c: true, r: "Молитва духом (на языках) назидает лично тебя, а для созидания Тела нужен понятный язык." },
+                    { t: "Чтобы пастору было легче проверять слова", c: false }
+                ]
+            },
+            {
+                q: "Чем отличается зрелый служитель от младенца во Христе?",
+                a: [
+                    { t: "Он всегда ищет только собственного роста", c: false },
+                    { t: "Он постоянно думает о назидании ближнего и служении ему", c: true, r: "Зрелость — это переход от потребления к созиданию других." }
+                ]
+            },
+            {
+                q: "Кто является вашим «ближним» согласно притче о Самарянине (Лк. 10)?",
+                a: [
+                    { t: "Только члены моей семьи и родственники", c: false },
+                    { t: "Тот, кто оказался вблизи в критический момент и проявил милость", c: true, r: "Ближний определяется не родством, а восполнением нужды в нужный момент." }
+                ]
+            },
+            {
+                q: "Почему «Подотчетность» (Accountability) обязательна в Царстве Божьем?",
+                a: [
+                    { t: "Это страховка от духовного падения и ослепления грехом", c: true, r: "Вне подотчетности в жизни заводятся смертельно опасные бактерии гордости и греха." },
+                    { t: "Это способ контроля со стороны пастора", c: false }
+                ]
+            },
+            {
+                q: "Что Апостол Павел сделал в Иерусалиме через 14 лет (Гал. 2:2) в целях подотчетности?",
+                a: [
+                    { t: "Предложил знаменитейшим свое благовествование для проверки", c: true, r: "Даже Апостол проверял свое учение у лидеров, чтобы не трудиться напрасно." },
+                    { t: "Потребовал особого признания своей власти", c: false }
+                ]
+            }
+        ];
+
+        let cur = 0, score = 0, locked = false;
+
+        function start() {
+            document.getElementById('scr-intro').classList.add('hidden');
+            document.getElementById('scr-quiz').classList.remove('hidden');
+            load();
+        }
+
+        function load() {
+            locked = false;
+            const d = quizData[cur];
+            document.getElementById('q-label').innerText = `Вопрос ${cur + 1} из ${quizData.length}`;
+            document.getElementById('q-fill').style.width = ((cur + 1) / quizData.length * 100) + '%';
+            document.getElementById('q-text').innerText = d.q;
+            document.getElementById('feedback-area').classList.add('hidden');
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = d.a.map((o, i) => `
+                <button class="option" onclick="select(this, ${i})">
+                    <div class="option-indicator">${String.fromCharCode(65+i)}</div>
+                    <span>${o.t}</span>
+                </button>
+            `).join('');
+            window.scrollTo(0,0);
+        }
+
+        function select(el, idx) {
+            if (locked) return;
+            locked = true;
+            const correct = quizData[cur].a[idx].c;
+            const btns = document.querySelectorAll('.option');
+
+            if (correct) {
+                score++;
+                el.classList.add('correct');
+                document.getElementById('fb-title').innerText = "ВЕРНО ✓";
+                document.getElementById('fb-title').style.color = "var(--green)";
+            } else {
+                el.classList.add('incorrect');
+                document.getElementById('fb-title').innerText = "ОБРАТИТЕ ВНИМАНИЕ";
+                document.getElementById('fb-title').style.color = "var(--red)";
+                quizData[cur].a.forEach((o, i) => { if(o.c) btns[i].classList.add('highlight'); });
+            }
+
+            document.getElementById('fb-text').innerText = quizData[cur].a.find(o => o.c).r;
+            document.getElementById('feedback-area').classList.remove('hidden');
+        }
+
+        function next() {
+            cur++;
+            if (cur < quizData.length) load();
+            else finish();
+        }
+
+        function finish() {
+            document.getElementById('scr-quiz').classList.add('hidden');
+            document.getElementById('scr-final').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+            const status = document.getElementById('final-status');
+            if (score === 8) status.innerText = "ХРАНИТЕЛЬ ЕДИНСТВА";
+            else if (score >= 6) status.innerText = "ЧЕЛОВЕК НАЗИДАНИЯ";
+            else status.innerText = "СТУДЕНТ-ПРАКТИК";
+        }
+    </script>
+</body>
+</html>
