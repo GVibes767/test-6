@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Подключение: Семья в действии</title>
+    <!-- Библиотеки -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        :root {
+            --gold: #eab308;
+            --bg: #020617;
+            --card: #0f172a;
+            --border: #1e293b;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .gift-btn.active { background-color: var(--gold); color: #000; border-color: var(--gold); }
+        input, textarea { outline: none !important; }
+        .shadow-gold { box-shadow: 0 0 20px rgba(234, 179, 8, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen pb-24">
+
+    <!-- ШАПКА -->
+    <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-lg border-b border-slate-800 p-4">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="text-yellow-500">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                </div>
+                <h1 class="font-black uppercase tracking-tighter text-xl italic">Подключение</h1>
+            </div>
+            <div id="user-id-badge" class="text-[10px] bg-slate-800 px-2 py-1 rounded font-mono text-slate-400 border border-slate-700 uppercase">
+                Загрузка...
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-4">
+        
+        <!-- ВКЛАДКА 1: МОЙ ПРОФИЛЬ -->
+        <section id="tab-profile" class="tab-content active">
+            <!-- Режим просмотра -->
+            <div id="profile-view" class="space-y-4 hidden">
+                <div class="bg-slate-900 p-6 rounded-[2.5rem] border border-slate-800 relative overflow-hidden shadow-gold">
+                    <button onclick="toggleEdit(true)" class="absolute top-6 right-6 text-slate-500 hover:text-yellow-500">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </button>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center text-yellow-500 border border-yellow-500/20 shadow-inner">
+                            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <div>
+                            <h2 id="view-name" class="text-xl font-black uppercase italic leading-none">Имя Фамилия</h2>
+                            <p id="view-tg" class="text-slate-500 text-sm font-bold mt-2 tracking-tight">@username</p>
+                        </div>
+                    </div>
+                    <div id="view-gifts" class="flex flex-wrap gap-1.5">
+                        <!-- Дары -->
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-900 p-5 rounded-3xl border border-blue-500/20">
+                        <div class="flex items-center gap-2 text-blue-400 mb-3 font-black text-[10px] uppercase tracking-widest">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
+                            Я могу (Ресурс)
+                        </div>
+                        <p id="view-sideA" class="text-xs text-slate-300 leading-relaxed italic">«Расскажите о своих талантах»</p>
+                    </div>
+                    <div class="bg-slate-900 p-5 rounded-3xl border border-red-500/20">
+                        <div class="flex items-center gap-2 text-red-400 mb-3 font-black text-[10px] uppercase tracking-widest">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                            Мне нужно (Нужда)
+                        </div>
+                        <p id="view-sideB" class="text-xs text-slate-300 leading-relaxed">«В чем вам нужна помощь?»</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Режим редактирования -->
+            <div id="profile-edit" class="space-y-6">
+                <div class="bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-xl">
+                    <h3 class="text-yellow-500 text-[10px] font-black uppercase mb-4 tracking-widest italic">Ваши данные</h3>
+                    <input id="edit-name" type="text" class="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 mb-3 focus:border-yellow-500 transition-all text-sm" placeholder="Имя и Фамилия">
+                    <input id="edit-tg" type="text" class="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 focus:border-yellow-500 transition-all text-sm" placeholder="Telegram @username">
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-xl">
+                    <h3 class="text-yellow-500 text-[10px] font-black uppercase mb-4 tracking-widest italic">Духовные дары (выберите несколько)</h3>
+                    <div id="gifts-grid" class="flex flex-wrap gap-2 mb-4">
+                        <!-- Кнопки даров генерируются JS -->
+                    </div>
+                    <input id="edit-custom-gift" type="text" class="w-full bg-slate-950 p-3 rounded-xl border border-slate-800 text-sm italic" placeholder="Свой вариант дара...">
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-xl">
+                    <h3 class="text-blue-400 text-[10px] font-black uppercase mb-2 tracking-widest italic">Сторона А: Я умею / Могу помочь</h3>
+                    <textarea id="edit-sideA" class="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 text-sm min-h-[100px]" placeholder="Ваша профессия, навыки, чем вы полезны для Дома?"></textarea>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-xl">
+                    <h3 class="text-red-400 text-[10px] font-black uppercase mb-2 tracking-widest italic">Сторона Б: Мне нужна помощь / совет</h3>
+                    <textarea id="edit-sideB" class="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 text-sm min-h-[100px]" placeholder="В чем вы нуждаетесь? Молитва, физическая помощь, консультация?"></textarea>
+                </div>
+
+                <button onclick="saveProfile()" class="w-full bg-yellow-500 text-slate-950 p-5 rounded-2xl font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all">Сохранить анкету</button>
+            </div>
+        </section>
+
+        <!-- ВКЛАДКА 2: БИРЖА ТАЛАНТОВ -->
+        <section id="tab-market" class="tab-content space-y-4">
+            <div class="relative">
+                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <input id="market-search" type="text" oninput="renderMarket()" class="w-full bg-slate-900 p-4 pl-12 rounded-2xl border border-slate-800 text-sm focus:border-yellow-500/50 transition-all" placeholder="Найти талант или человека...">
+            </div>
+            <div id="market-list" class="space-y-3">
+                <!-- Список участников -->
+            </div>
+        </section>
+
+        <!-- ВКЛАДКА 3: МОЛИТВА -->
+        <section id="tab-prayer" class="tab-content space-y-6">
+            <div class="bg-slate-900 p-5 rounded-3xl border border-slate-800 shadow-gold">
+                <h3 class="text-yellow-500 text-[10px] font-black uppercase mb-3 italic tracking-widest">Стена молитвы</h3>
+                <textarea id="prayer-input" class="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 text-sm mb-3 h-24" placeholder="Напишите вашу молитвенную просьбу..."></textarea>
+                <button onclick="postPrayer()" class="w-full bg-slate-100 text-slate-950 p-3 rounded-xl font-black uppercase text-xs tracking-widest shadow-lg">Опубликовать</button>
+            </div>
+            <div id="prayer-list" class="space-y-3">
+                <!-- Молитвы -->
+            </div>
+        </section>
+
+        <!-- ВКЛАДКА 4: УСПЕХИ -->
+        <section id="tab-success" class="tab-content space-y-6">
+            <div class="bg-yellow-500 p-6 rounded-[2.5rem] text-slate-950 shadow-2xl shadow-yellow-900/30">
+                <h3 class="font-black uppercase text-[10px] mb-3 tracking-widest italic">Твоё достижение</h3>
+                <input id="success-input" type="text" class="w-full bg-white/20 border border-black/10 p-4 rounded-xl placeholder:text-slate-700 font-bold" placeholder="Прошел тест 5 урока! / Стал служителем!">
+                <button onclick="postSuccess()" class="w-full bg-slate-950 text-white mt-4 p-4 rounded-xl font-black uppercase text-xs tracking-widest active:scale-95 transition-all">Поделиться в ленте</button>
+            </div>
+            <div id="success-list" class="space-y-3">
+                <!-- Успехи -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 p-3 flex justify-around items-center max-w-md mx-auto z-50">
+        <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center gap-1 flex-1 text-yellow-500 transition-all">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="text-[9px] font-black uppercase tracking-widest">Я</span>
+        </button>
+        <button onclick="switchTab('market')" id="nav-market" class="flex flex-col items-center gap-1 flex-1 text-slate-500 transition-all">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span class="text-[9px] font-black uppercase tracking-widest">Биржа</span>
+        </button>
+        <button onclick="switchTab('prayer')" id="nav-prayer" class="flex flex-col items-center gap-1 flex-1 text-slate-500 transition-all">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            <span class="text-[9px] font-black uppercase tracking-widest">Молитва</span>
+        </button>
+        <button onclick="switchTab('success')" id="nav-success" class="flex flex-col items-center gap-1 flex-1 text-slate-500 transition-all">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+            <span class="text-[9px] font-black uppercase tracking-widest">Успехи</span>
+        </button>
+    </nav>
+
+    <!-- ЛОГИКА И FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, onSnapshot, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // КОНФИГУРАЦИЯ
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'connection-family-v1';
+
+        // СОСТОЯНИЕ
+        let currentUser = null;
+        let myProfile = null;
+        let allProfiles = [];
+        let selectedGifts = [];
+        const SPIRITUAL_GIFTS = ["Администрирование", "Распознавание", "Евангелизм", "Вера", "Даяние", "Исцеление", "Помощь", "Гостеприимство", "Знание", "Лидерство", "Милосердие", "Пророчество", "Служение", "Учительство", "Мудрость"];
+
+        // ИНИЦИАЛИЗАЦИЯ
+        window.onload = async () => {
+            // ПРАВИЛО 3: Сначала авторизация, потом всё остальное
+            const initAuth = async () => {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            };
+
+            await initAuth().catch(err => console.error("Ошибка авторизации:", err));
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    document.getElementById('user-id-badge').innerText = user.uid.substring(0,6);
+                    initListeners();
+                } else {
+                    console.log("Пользователь не авторизован");
+                }
+            });
+            renderGiftButtons();
+        };
+
+        function initListeners() {
+            if (!currentUser) return; // ПРАВИЛО 3: Гвард перед операциями Firestore
+
+            // ОШИБКИ: Добавлены вторые аргументы в onSnapshot для обработки permission-denied
+            const errorHandler = (err) => console.error("Ошибка Firestore:", err.message);
+
+            // Профили
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'profiles'), (snap) => {
+                allProfiles = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                myProfile = allProfiles.find(p => p.id === currentUser.uid);
+                renderProfile();
+                renderMarket();
+            }, errorHandler);
+
+            // Молитвы
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'prayers'), (snap) => {
+                const list = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                renderPrayers(list);
+            }, errorHandler);
+
+            // Достижения
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'achievements'), (snap) => {
+                const list = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                renderAchievements(list);
+            }, errorHandler);
+        }
+
+        // ВКЛАДКИ
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.add('active');
+            
+            document.querySelectorAll('nav button').forEach(b => {
+                b.classList.remove('text-yellow-500');
+                b.classList.add('text-slate-500');
+            });
+            const navBtn = document.getElementById(`nav-${tabId}`);
+            if (navBtn) {
+                navBtn.classList.remove('text-slate-500');
+                navBtn.classList.add('text-yellow-500');
+            }
+            window.scrollTo(0,0);
+        };
+
+        // ЛОГИКА ПРОФИЛЯ
+        window.toggleEdit = (show) => {
+            document.getElementById('profile-view').classList.toggle('hidden', show);
+            document.getElementById('profile-edit').classList.toggle('hidden', !show);
+            if(show && myProfile) {
+                document.getElementById('edit-name').value = myProfile.name || '';
+                document.getElementById('edit-tg').value = myProfile.tg || '';
+                document.getElementById('edit-sideA').value = myProfile.sideA || '';
+                document.getElementById('edit-sideB').value = myProfile.sideB || '';
+                document.getElementById('edit-custom-gift').value = myProfile.customGift || '';
+                selectedGifts = myProfile.gifts || [];
+                renderGiftButtons();
+            }
+        };
+
+        function renderGiftButtons() {
+            const container = document.getElementById('gifts-grid');
+            if (!container) return;
+            container.innerHTML = SPIRITUAL_GIFTS.map(g => `
+                <button onclick="window.toggleGift('${g}')" class="gift-btn border border-slate-700 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${selectedGifts.includes(g) ? 'active' : 'bg-slate-800 text-slate-400'}">
+                    ${g}
+                </button>
+            `).join('');
+        }
+
+        window.toggleGift = (g) => {
+            if(selectedGifts.includes(g)) selectedGifts = selectedGifts.filter(x => x !== g);
+            else selectedGifts.push(g);
+            renderGiftButtons();
+        };
+
+        window.saveProfile = async () => {
+            if (!currentUser) return;
+            const name = document.getElementById('edit-name').value.trim();
+            if(!name) return alert("Введите имя!");
+            
+            const data = {
+                name,
+                tg: document.getElementById('edit-tg').value,
+                gifts: selectedGifts,
+                customGift: document.getElementById('edit-custom-gift').value,
+                sideA: document.getElementById('edit-sideA').value,
+                sideB: document.getElementById('edit-sideB').value,
+                updatedAt: serverTimestamp()
+            };
+
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'profiles', currentUser.uid), data)
+                .then(() => toggleEdit(false))
+                .catch(err => console.error("Ошибка сохранения:", err));
+        };
+
+        function renderProfile() {
+            if(!myProfile) {
+                toggleEdit(true);
+                return;
+            }
+            document.getElementById('profile-view').classList.remove('hidden');
+            document.getElementById('profile-edit').classList.add('hidden');
+            document.getElementById('view-name').innerText = myProfile.name;
+            document.getElementById('view-tg').innerText = myProfile.tg || '@no_tg';
+            document.getElementById('view-sideA').innerText = myProfile.sideA || 'Не заполнено';
+            document.getElementById('view-sideB').innerText = myProfile.sideB || 'Не заполнено';
+            
+            const giftsHtml = (myProfile.gifts || []).map(g => `<span class="bg-slate-800 text-slate-300 text-[9px] px-2 py-1 rounded font-bold uppercase border border-slate-700">${g}</span>`).join('');
+            document.getElementById('view-gifts').innerHTML = giftsHtml + (myProfile.customGift ? `<span class="bg-yellow-500/10 text-yellow-500 text-[9px] px-2 py-1 rounded font-bold italic border border-yellow-500/20">${myProfile.customGift}</span>` : '');
+        }
+
+        // ЛОГИКА БИРЖИ
+        window.renderMarket = () => {
+            if (!currentUser) return;
+            const search = document.getElementById('market-search').value.toLowerCase();
+            const container = document.getElementById('market-list');
+            const filtered = allProfiles.filter(p => p.id !== currentUser.uid && (p.name.toLowerCase().includes(search) || p.sideA.toLowerCase().includes(search)));
+            
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-20 text-slate-600 text-xs font-black uppercase tracking-[0.2em]">Никого не найдено</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(p => `
+                <div class="bg-slate-900/50 p-5 rounded-[2rem] border border-slate-800 shadow-lg">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-black text-sm uppercase italic text-yellow-500 tracking-tight">${p.name}</h4>
+                        <span class="text-[9px] bg-slate-800 px-2 py-1 rounded text-slate-500 font-bold">${p.tg || '@...'}</span>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="bg-slate-950/50 p-3 rounded-2xl border border-blue-500/10">
+                            <span class="text-[8px] font-black uppercase text-blue-500 block mb-1 tracking-widest italic">Ресурс:</span>
+                            <p class="text-[11px] text-slate-300 italic leading-snug">«${p.sideA || 'Не указано'}»</p>
+                        </div>
+                        <div class="bg-slate-950/50 p-3 rounded-2xl border border-red-500/10">
+                            <span class="text-[8px] font-black uppercase text-red-500 block mb-1 tracking-widest italic">Нужда:</span>
+                            <p class="text-[11px] text-slate-400 leading-snug">«${p.sideB || 'Не указано'}»</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        // ЛОГИКА МОЛИТВЫ
+        window.postPrayer = async () => {
+            if (!currentUser) return;
+            const txt = document.getElementById('prayer-input').value.trim();
+            if(!txt) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'prayers'), {
+                userId: currentUser.uid,
+                userName: myProfile?.name || 'Аноним',
+                text: txt,
+                status: 'open',
+                createdAt: serverTimestamp()
+            }).catch(err => console.error("Ошибка публикации молитвы:", err));
+            document.getElementById('prayer-input').value = '';
+        };
+
+        window.answerPrayer = async (id) => {
+            if (!currentUser) return;
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'prayers', id), { status: 'answered' })
+                .catch(err => console.error("Ошибка обновления молитвы:", err));
+        };
+
+        function renderPrayers(list) {
+            const container = document.getElementById('prayer-list');
+            if (!container) return;
+            container.innerHTML = list.map(n => `
+                <div class="p-5 rounded-3xl border transition-all ${n.status === 'answered' ? 'bg-green-500/5 border-green-500/20 opacity-60' : 'bg-slate-900 border-slate-800 shadow-lg'}">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-[10px] font-black uppercase text-slate-500 italic tracking-wider">${n.userName}</span>
+                        ${n.status === 'answered' ? '<div class="text-green-500 font-black text-[8px] uppercase tracking-widest">Бог ответил!</div>' : ''}
+                    </div>
+                    <p class="text-sm ${n.status === 'answered' ? 'text-green-200/50 line-through' : 'text-slate-300'}">${n.text}</p>
+                    ${currentUser && n.userId === currentUser.uid && n.status !== 'answered' ? `<button onclick="window.answerPrayer('${n.id}')" class="mt-3 text-[10px] font-black uppercase text-yellow-500 underline underline-offset-4 decoration-2 shadow-yellow-500/10">Есть ответ!</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // ЛОГИКА ДОСТИЖЕНИЙ
+        window.postSuccess = async () => {
+            if (!currentUser) return;
+            const msg = document.getElementById('success-input').value.trim();
+            if(!msg) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'achievements'), {
+                userId: currentUser.uid,
+                userName: myProfile?.name || 'Студент',
+                msg,
+                createdAt: serverTimestamp()
+            }).catch(err => console.error("Ошибка публикации достижения:", err));
+            document.getElementById('success-input').value = '';
+        };
+
+        function renderAchievements(list) {
+            const container = document.getElementById('success-list');
+            if (!container) return;
+            container.innerHTML = list.map(a => `
+                <div class="bg-slate-900/40 p-5 rounded-3xl border border-slate-800 flex items-center gap-4 shadow-lg">
+                    <div class="w-12 h-12 bg-yellow-500/10 rounded-2xl flex items-center justify-center text-yellow-500 flex-shrink-0 border border-yellow-500/10 shadow-inner">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-[13px] font-bold leading-tight"><span class="text-yellow-500 uppercase italic mr-1 font-black">${a.userName}:</span> ${a.msg}</p>
+                        <span class="text-[8px] text-slate-600 font-black uppercase mt-2 block tracking-widest italic">Достижение получено</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
